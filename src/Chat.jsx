@@ -14,11 +14,14 @@ function Chat() {
     })
     const sendMessage = async () => {
         try {setLoading(true)
-        const res = await fetch("https://gemini-ai-chat-bot-qkbt.onrender.com/",{
+        const res = await fetch("https://gemini-ai-chat-bot-qkbt.onrender.com/chat",{
             method:"POST",
             headers: {"Content-Type":"application/json"},
             body: JSON.stringify({message: input,chatId,model})
         })
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`)
+        }
         const reader = res.body.getReader()
         const decoder = new TextDecoder()
         let fulltext = ""
