@@ -14,7 +14,7 @@ function Chat() {
     })
     const sendMessage = async () => {
         try {setLoading(true)
-        const res = await fetch("http://localhost:3000/chat",{
+        const res = await fetch("https://gemini-ai-chat-bot-qkbt.onrender.com/",{
             method:"POST",
             headers: {"Content-Type":"application/json"},
             body: JSON.stringify({message: input,chatId,model})
