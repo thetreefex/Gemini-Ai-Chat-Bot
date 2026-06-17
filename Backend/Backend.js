@@ -4,7 +4,6 @@ import express from "express"
 import cors from "cors"
 import * as dotenv from "dotenv"
 dotenv.config()
-console.log("Ключ:", process.env.GEMINI_API_KEY)
 const pool = new pg.Pool({
     user:"postgres",
     host:"localhost",
@@ -39,7 +38,7 @@ app.post("/chat", async(req,res) => {
     parts: [{ text: row.text }]}))
     const response = await ai.models.generateContentStream({
         model: model || "gemini-2.5-flash",
-        contents:[...formatted,{ role: "user", parts: [{ text: message }] }]
+        contents: formatted
     })
     console.log(model)
     let fulltext = ""
