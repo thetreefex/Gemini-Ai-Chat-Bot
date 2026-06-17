@@ -5,12 +5,29 @@ import cors from "cors"
 import * as dotenv from "dotenv"
 dotenv.config()
 const pool = new pg.Pool({
-    user:"postgres",
-    host:"localhost",
-    database:"My_App",
-    password:process.env.DB_PASSWORD,
-    port:5432
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
 })
+async function initDB() {
+    try {
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS messages (
+                id SERIAL PRIMARY KEY,
+                chat_id TEXT NOT NULL,
+                role TEXT NOT NULL,
+                text TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `)
+
+        console.log("Messages table ready")
+    } catch (err) {
+        console.error("DB init error:", err)
+    }
+}
+initDB()
 pool.query("SELECT NOW()", (err, res) => {
     if (err) {
         console.log("Something went wrong:", err)
@@ -53,6 +70,7 @@ app.post("/chat", async(req,res) => {
         [chatId,"model",fulltext]
     )
 })
- app.listen(3000,() => {
-        console.log("Сервер запущен")
-    })
+const PORT = process.env.PORT || 3000
+app.listen(PORT, () => {
+    console.log(`Сервер запущен на ${PORT}`)
+})
